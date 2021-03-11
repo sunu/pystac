@@ -1,5 +1,33 @@
 # Changelog
 
+## unreleased
+
+### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+## [v0.5.5]
+
+### Added
+
+- Added support for STAC file extension ([#270](https://github.com/stac-utils/pystac/pull/270))
+
+### Fixed
+
+- Fix handling of optional properties when using apply on view extension ([#259](https://github.com/stac-utils/pystac/pull/259))
+- Fixed issue with setting None into projection extension fields that are not required breaking validation ([#269](https://github.com/stac-utils/pystac/pull/269))
+- Remove unnecessary `deepcopy` calls in `to_dict` methods to avoid costly overhead ([#273](https://github.com/stac-utils/pystac/pull/273))
+
+
+### Changed
+
+- Subclass relevant classes from `enum.Enum`. This allows iterating over the class' contents. The `__str__` method is overwritten so this should not break backwards compatibility. ([#261](https://github.com/stac-utils/pystac/pull/261))
+- Extract method to correctly handle setting properties in Item/Asset for ItemExtensions ([#272](https://github.com/stac-utils/pystac/pull/272))
+
 ## [v0.5.4]
 
 ### Added
