@@ -646,8 +646,6 @@ class Catalog(STACObject):
 
         self.catalog_type = catalog_type
 
-        return saves
-
     def walk(self):
         """Walks through children and items of catalogs.
 
