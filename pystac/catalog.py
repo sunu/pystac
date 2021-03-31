@@ -2,6 +2,8 @@ import os
 from copy import deepcopy
 from enum import Enum
 
+import asyncio
+
 import pystac
 from pystac import STACError
 from pystac.stac_object import STACObject
@@ -627,9 +629,11 @@ class Catalog(STACObject):
             if child_link.is_resolved():
                 await child_link.target.save()
 
+        item_saves = []
         for item_link in self.get_item_links():
             if item_link.is_resolved():
-                await item_link.target.save_object(include_self_link=items_include_self_link)
+                item_saves.append(item_link.target.save_object(include_self_link=items_include_self_link))
+        await asyncio.gather(*item_saves)
 
         include_self_link = False
         # include a self link if this is the root catalog or if ABSOLUTE_PUBLISHED catalog
