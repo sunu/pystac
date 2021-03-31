@@ -27,7 +27,10 @@ setup(
     packages=find_packages(),
     py_modules=[splitext(basename(path))[0] for path in glob('pystac/*.py')],
     include_package_data=False,
-    install_requires=["python-dateutil>=2.7.0"],
+    install_requires=[
+        "python-dateutil>=2.7.0",
+        "aiofiles~=0.6.0"
+    ],
     extras_require={
         "validation": ["jsonschema==3.2.0"]
     },
