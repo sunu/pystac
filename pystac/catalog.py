@@ -627,7 +627,7 @@ class Catalog(STACObject):
 
         for child_link in self.get_child_links():
             if child_link.is_resolved():
-                await child_link.target._save()
+                await child_link.target.save()
 
         item_saves = []
         for item_link in self.get_item_links():
