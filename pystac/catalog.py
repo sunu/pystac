@@ -651,7 +651,7 @@ class Catalog(STACObject):
 
     def save(self, *args, **kwargs):
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(asyncio.gather(*_save(*args, **kwargs)))
+        loop.run_until_complete(asyncio.gather(*self._save(*args, **kwargs)))
 
     def walk(self):
         """Walks through children and items of catalogs.
