@@ -597,7 +597,7 @@ class Catalog(STACObject):
 
         return result
 
-    async def save(self, catalog_type=None):
+    async def _save(self, catalog_type=None):
         """Save this catalog and all it's children/item to files determined by the object's
         self link HREF.
 
@@ -625,15 +625,16 @@ class Catalog(STACObject):
 
         items_include_self_link = root.catalog_type in [CatalogType.ABSOLUTE_PUBLISHED]
 
+        saves = []
         for child_link in self.get_child_links():
             if child_link.is_resolved():
-                await child_link.target.save()
+                saves += child_link.target.save()
 
         item_saves = []
         for item_link in self.get_item_links():
             if item_link.is_resolved():
-                item_saves.append(item_link.target.save_object(include_self_link=items_include_self_link))
-        await asyncio.gather(*item_saves)
+                saves.append(item_link.target.save_object(include_self_link=items_include_self_link))
+        #await asyncio.gather(*item_saves)
 
         include_self_link = False
         # include a self link if this is the root catalog or if ABSOLUTE_PUBLISHED catalog
@@ -642,9 +643,15 @@ class Catalog(STACObject):
                 or root.catalog_type == CatalogType.ABSOLUTE_PUBLISHED):
             include_self_link = True
 
-        await self.save_object(include_self_link=include_self_link)
+        saves.append(self.save_object(include_self_link=include_self_link))
 
         self.catalog_type = catalog_type
+
+        return saves
+
+    def save(self, *args, **kwargs):
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(asyncio.gather(*_save(*args, **kwargs)))
 
     def walk(self):
         """Walks through children and items of catalogs.
