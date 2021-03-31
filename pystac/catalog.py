@@ -597,7 +597,7 @@ class Catalog(STACObject):
 
         return result
 
-    async def _save(self, catalog_type=None):
+    def _save(self, catalog_type=None):
         """Save this catalog and all it's children/item to files determined by the object's
         self link HREF.
 
