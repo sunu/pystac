@@ -597,7 +597,7 @@ class Catalog(STACObject):
 
         return result
 
-    def _save(self, catalog_type=None):
+    async def save(self, catalog_type=None):
         """Save this catalog and all it's children/item to files determined by the object's
         self link HREF.
 
@@ -625,16 +625,15 @@ class Catalog(STACObject):
 
         items_include_self_link = root.catalog_type in [CatalogType.ABSOLUTE_PUBLISHED]
 
-        saves = []
         for child_link in self.get_child_links():
             if child_link.is_resolved():
-                saves += child_link.target._save()
+                await child_link.target._save()
 
         item_saves = []
         for item_link in self.get_item_links():
             if item_link.is_resolved():
-                saves.append(item_link.target.save_object(include_self_link=items_include_self_link))
-        #await asyncio.gather(*item_saves)
+                item_saves.append(item_link.target.save_object(include_self_link=items_include_self_link))
+        await asyncio.gather(*item_saves)
 
         include_self_link = False
         # include a self link if this is the root catalog or if ABSOLUTE_PUBLISHED catalog
@@ -643,7 +642,7 @@ class Catalog(STACObject):
                 or root.catalog_type == CatalogType.ABSOLUTE_PUBLISHED):
             include_self_link = True
 
-        saves.append(self.save_object(include_self_link=include_self_link))
+        await self.save_object(include_self_link=include_self_link)
 
         self.catalog_type = catalog_type
 
