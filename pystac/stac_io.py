@@ -1,6 +1,7 @@
 import os
 import json
 
+import aiofiles
 from urllib.parse import urlparse
 from urllib.request import urlopen
 from urllib.error import HTTPError
@@ -24,13 +25,13 @@ class STAC_IO:
             with open(uri) as f:
                 return f.read()
 
-    def default_write_text_method(uri, txt):
+    async def default_write_text_method(uri, txt):
         """Default method for writing text. Only handles local file paths."""
         dirname = os.path.dirname(uri)
         if dirname != '' and not os.path.isdir(dirname):
             os.makedirs(dirname)
-        with open(uri, 'w') as f:
-            f.write(txt)
+        async with aiofiles.open(uri, 'w') as f:
+            await f.write(txt)
 
     read_text_method = default_read_text_method
     """Users of PySTAC can replace the read_text_method in order
@@ -73,7 +74,7 @@ class STAC_IO:
         return cls.read_text_method(uri)
 
     @classmethod
-    def write_text(cls, uri, txt):
+    async def write_text(cls, uri, txt):
         """Write the given text to a file at the given URI.
 
         Args:
@@ -86,7 +87,7 @@ class STAC_IO:
             STAC_IO in order to enable additional URI types, replace that member
             with your own implementation.
         """
-        cls.write_text_method(uri, txt)
+        await cls.write_text_method(uri, txt)
 
     @classmethod
     def read_json(cls, uri):
@@ -131,7 +132,7 @@ class STAC_IO:
         return cls.stac_object_from_dict(d, href=uri, root=root)
 
     @classmethod
-    def save_json(cls, uri, json_dict):
+    async def save_json(cls, uri, json_dict):
         """Write a dict to the given URI as JSON.
 
         Args:
@@ -144,4 +145,4 @@ class STAC_IO:
             STAC_IO in order to enable additional URI types, replace that member
             with your own implementation.
         """
-        STAC_IO.write_text(uri, json.dumps(json_dict, indent=4))
+        await STAC_IO.write_text(uri, json.dumps(json_dict, indent=4))
