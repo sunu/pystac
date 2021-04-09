@@ -23,9 +23,11 @@ from pystac.catalog import (Catalog, CatalogType)
 from pystac.collection import (Collection, Extent, SpatialExtent, TemporalExtent, Provider)
 from pystac.item import (Item, Asset, CommonMetadata)
 
+from pystac.item_collection import ItemCollection
 from pystac.serialization import stac_object_from_dict
 
 import pystac.validation
+
 
 STAC_IO.stac_object_from_dict = stac_object_from_dict
 

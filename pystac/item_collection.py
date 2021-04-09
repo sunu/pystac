@@ -23,6 +23,7 @@ class ItemCollection(object):
     ):
         features = features or []
         self.features = [f.clone() for f in features]
+        self.links = []
         for f in self.features:
             f.clear_links('root')
 
