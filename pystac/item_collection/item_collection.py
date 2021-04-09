@@ -1,3 +1,4 @@
+import json
 from copy import deepcopy
 
 import pystac
@@ -80,3 +81,8 @@ class ItemCollection(object):
             item_collection.add_link(pystac.Link.from_dict(link))
 
         return item_collection
+
+    @classmethod
+    def from_file(cls, filename):
+        with open(filename) as f: 
+            return cls.from_dict(json.loads(f.read()))
